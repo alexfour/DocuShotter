@@ -23,6 +23,9 @@ namespace DocuShotter
         private int shotWidth = 0;      //Width of the screenshot area
         private int shotHeight = 0;     //Height of the screenshot area
 
+        System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Red);
+        System.Drawing.Graphics formGraphics,gra;
+
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
 
@@ -31,6 +34,12 @@ namespace DocuShotter
 
         [DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(int vKey);
+
+        [DllImport("User32.dll")]
+        public static extern IntPtr GetDC(IntPtr hwnd);
+
+        [DllImport("User32.dll")]
+        public static extern void ReleaseDC(IntPtr hwnd, IntPtr dc);
 
         public Form1()
         {
@@ -57,38 +66,16 @@ namespace DocuShotter
         /// <param name="height">Height of the screenshot area</param>
         private void TakeScreenShot(int width, int height)
         {
-            Bitmap bmp = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(bmp))
+            if (width > 0 && height > 0)
             {
-                g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
-                bmp.Save("screenshot.png");  // saves the image
-            }
-        }
-
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.A && !isPressed) //TODO REMOVE e.KeyCode == Keys.A && 
-            {
-                initialX = System.Windows.Forms.Cursor.Position.X;
-                initialY = System.Windows.Forms.Cursor.Position.Y;
-                textBox1.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
-                isPressed = true;
-            }
-        }
-
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.A && isPressed)
-            {
-                textBox2.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
-                endX = System.Windows.Forms.Cursor.Position.X;
-                endY = System.Windows.Forms.Cursor.Position.Y;
-                shotWidth = Math.Abs(initialX - endX);
-                shotHeight = Math.Abs(initialY - endY);
-                textBox3.Text = shotWidth + " " + shotHeight;
-                isPressed = false;
-
-                TakeScreenShot(shotWidth, shotHeight);
+                Bitmap bmp = new Bitmap(width, height);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
+                    bmp.Save("screenshot.png");  // saves the image
+                    pictureBox1.ImageLocation = "screenshot.png";
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                }
             }
         }
 
@@ -120,6 +107,7 @@ namespace DocuShotter
         public void InitTimer()
         {
             Console.WriteLine("inittimer");
+
             timer2 = new Timer();
             timer2.Tick += new EventHandler(timer2_Tick);
             timer2.Interval = 16; // in miliseconds
@@ -136,21 +124,42 @@ namespace DocuShotter
 
             if (prntScrnIsPressed)
             {
+                //IntPtr desktopPtr = GetDC(IntPtr.Zero);
+                //Graphics gra = Graphics.FromHdc(desktopPtr);
+                //SolidBrush b = new SolidBrush(Color.White);
+                //gra.FillRectangle(b, new Rectangle(initialX, initialY, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
+                //formGraphics.FillRectangle(myBrush, new Rectangle(initialX, initialY, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
                 Console.WriteLine("pressed still");
+                //gra.Dispose();
+                //ReleaseDC(IntPtr.Zero, desktopPtr);
             }
             else
             {
                 Console.WriteLine("released" + isPressed);//TODO Execute client code...
                 timer2.Stop();
-
                 isPressed = false;
                 endX = System.Windows.Forms.Cursor.Position.X;
                 endY = System.Windows.Forms.Cursor.Position.Y;
+
+                //Swap X and Y values to allow screenshotting both ways
+                if (endX < initialX)
+                {
+                    int oldinitialX = initialX;
+                    initialX = endX;
+                    endX = oldinitialX;
+                }
+
+                if (endY < initialY)
+                {
+                    int oldinitialY = initialY;
+                    initialY = endY;
+                    endY = oldinitialY;
+                }                
+
                 shotWidth = Math.Abs(initialX - endX);
                 shotHeight = Math.Abs(initialY - endY);
                 TakeScreenShot(shotWidth, shotHeight);
             }
-
         }
     }
 }
