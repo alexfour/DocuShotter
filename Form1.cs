@@ -131,9 +131,9 @@ namespace DocuShotter
 
         private void PrepareForms()
         {
-            for (int i = 0; i < Screen.AllScreens.Length-1; i++)
+            for (int i = 0; i < Screen.AllScreens.Length; i++)
             {
-                PhotoForm newform = new PhotoForm(1);
+                PhotoForm newform = new PhotoForm(i);
                 newform.Show();
                 screenArray.Add(newform);
             }
