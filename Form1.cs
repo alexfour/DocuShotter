@@ -8,17 +8,11 @@ using System.Windows.Forms;
 
 /*TODO 
  * Handle element disposing
- * Make a tranformation to screenshot mode (Maybe)
- * Allow user to set naming/storing/etc. preferences
  * Change default hotkey from b button
  * Dispose tray icon
  * PhotoForm close remove monitorX images
  * Documentation
 */
-
-/*ISSUES
- * Higher than 100% DPI scaling breaks screenshots https://docs.microsoft.com/en-us/dotnet/framework/winforms/high-dpi-support-in-windows-forms
- */
 
 namespace DocuShotter
 {
@@ -56,7 +50,7 @@ namespace DocuShotter
             InitializeComponent();
             this.KeyPreview = true;
 
-            Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0000, 0x42);    //Set hotkey as 'b' and try to register a global hotkey
+            Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
                 Console.WriteLine("Hotkey registered");
             else
@@ -102,6 +96,7 @@ namespace DocuShotter
                         resultingNum = curNum.ToString().PadLeft(length, '0');
                     }
 
+
                     if (checkBox1.Checked)
                     {
                         using (NamePrompt form = new NamePrompt())
@@ -115,15 +110,17 @@ namespace DocuShotter
                         }
                     }
 
+                    resultingNum = (description == "") ? resultingNum : resultingNum + "-";
+
 
                     //var directory = new System.IO.DirectoryInfo(savepath + "\\");
                     //var sorted = directory.GetFiles(".").OrderBy(f => f).Last();
                     //Console.WriteLine(sorted);
 
                     g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
-                    Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + "-" + description + ".png");
-                    bmp.Save(savepath + "\\" + prefix + resultingNum + "-" + description + ".png");  // saves the image
-                    pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + "-" + description + ".png";
+                    Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + description + ".png");
+                    bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
+                    pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom; 
                 }
             }
@@ -168,12 +165,15 @@ namespace DocuShotter
         private void ButtonTimer_Tick(object sender, EventArgs e)
         {
             //Console.WriteLine("timertick");
-            short keyState = GetAsyncKeyState(0x42);
+            short keyState = GetAsyncKeyState(0x51);
+
+            short ctrlkeyState = GetAsyncKeyState(0x11);
 
             //Check if the MSB is set. If so, then the key is pressed.
-            bool prntScrnIsPressed = ((keyState >> 15) & 0x0001) == 0x0001;
+            bool hotkeyScrnIsPressed = ((keyState >> 15) & 0x0001) == 0x0001;
+            bool ctrlScrnIsPressed = ((ctrlkeyState >> 15) & 0x0001) == 0x0001;
 
-            if (!prntScrnIsPressed)
+            if (!hotkeyScrnIsPressed | !ctrlScrnIsPressed)
             {
                 drawPane.Dispose();
                 Console.WriteLine("released" + isPressed);//TODO Execute client code...
