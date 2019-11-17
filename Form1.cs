@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 /*TODO 
  * Handle element disposing
- * Make a tranformation to screenshot
+ * Make a tranformation to screenshot mode (Maybe)
  * Allow user to set naming/storing/etc. preferences
  * Change default hotkey from b button
+ * Dispose tray icon
+ * PhotoForm close remove monitorX images
  * Documentation
 */
+
+/*ISSUES
+ * Higher than 100% DPI scaling breaks screenshots https://docs.microsoft.com/en-us/dotnet/framework/winforms/high-dpi-support-in-windows-forms
+ */
 
 namespace DocuShotter
 {
@@ -26,6 +34,9 @@ namespace DocuShotter
         private int endY = 0;           //Destination Y coordinate of the screenshot
         private int shotWidth = 0;      //Width of the screenshot area
         private int shotHeight = 0;     //Height of the screenshot area
+        private int startNum, curNum = 0;
+
+        private string savepath, prefix, description= "";
 
         List<PhotoForm> screenArray = new List<PhotoForm>();
         DrawForm drawPane;
@@ -71,9 +82,44 @@ namespace DocuShotter
                 Bitmap bmp = new Bitmap(width, height);
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
+                    int length = 3;
+                    savepath = textBox1.Text;
+                    prefix = (textBox2.Text == "")? "" : textBox2.Text + "-";
+                    startNum = Int32.Parse(textBox5.Text);
+                    String resultingNum;
+
+                    if (startNum >= curNum)
+                        curNum = startNum;
+
+                    resultingNum = curNum.ToString().PadLeft(length, '0');
+
+                    bool exist = Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any();
+                    Console.WriteLine(exist);
+
+                    while (Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any())
+                    {
+                        curNum++;
+                        resultingNum = curNum.ToString().PadLeft(length, '0');
+                    }
+
+                    using (NamePrompt form = new NamePrompt())
+                    {
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            //Create a property in SetIPAddressForm to return the input of user.
+                            description = form.screenshotName;
+                            Console.WriteLine("Desc: " + description);
+                        }
+                    }
+
+                    //var directory = new System.IO.DirectoryInfo(savepath + "\\");
+                    //var sorted = directory.GetFiles(".").OrderBy(f => f).Last();
+                    //Console.WriteLine(sorted);
+
                     g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
-                    bmp.Save("screenshot.png");  // saves the image
-                    pictureBox1.ImageLocation = "screenshot.png";
+                    Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + "-" + description + ".png");
+                    bmp.Save(savepath + "\\" + prefix + resultingNum + "-" + description + ".png");  // saves the image
+                    pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + "-" + description + ".png";
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom; 
                 }
             }
@@ -81,9 +127,9 @@ namespace DocuShotter
 
         private void PrepareForms()
         {
-            for (int i = 0; i < Screen.AllScreens.Length; i++)
+            for (int i = 0; i < Screen.AllScreens.Length-1; i++)
             {
-                PhotoForm newform = new PhotoForm(i);
+                PhotoForm newform = new PhotoForm(1);
                 newform.Show();
                 screenArray.Add(newform);
             }
@@ -105,10 +151,9 @@ namespace DocuShotter
             base.WndProc(ref m);
         }
 
-  
         public void InitTimer()
         {
-            Console.WriteLine("inittimer");
+            //Console.WriteLine("inittimer");
 
             buttonTimer = new Timer();
             buttonTimer.Tick += new EventHandler(ButtonTimer_Tick);
@@ -118,7 +163,7 @@ namespace DocuShotter
 
         private void ButtonTimer_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("timertick");
+            //Console.WriteLine("timertick");
             short keyState = GetAsyncKeyState(0x42);
 
             //Check if the MSB is set. If so, then the key is pressed.
@@ -126,6 +171,7 @@ namespace DocuShotter
 
             if (!prntScrnIsPressed)
             {
+                drawPane.Dispose();
                 Console.WriteLine("released" + isPressed);//TODO Execute client code...
                 //myBrush.Dispose();
                 //formGraphics.Dispose();
@@ -158,7 +204,7 @@ namespace DocuShotter
                 {
                     screenArray[i].Dispose();
                 }
-                drawPane.Dispose();
+
                 //PhotoFormVar.Dispose();
             }
         }

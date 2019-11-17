@@ -56,7 +56,7 @@ namespace DocuShotter
 
         private void pictureBox1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
-            Console.WriteLine(initialX + "-DRAWFORM1-" + initialY);
+            //Console.WriteLine(initialX + "-DRAWFORM1-" + initialY);
             var relativePoint = this.PointToClient(Cursor.Position);
             // Create a local version of the graphics object for the PictureBox.
             Graphics g = e.Graphics;
@@ -66,8 +66,8 @@ namespace DocuShotter
             // Draw a line in the PictureBox.
             //g.DrawLine(System.Drawing.Pens.Red, pictureBox1.Left, pictureBox1.Top, pictureBox1.Right, pictureBox1.Bottom);
 
-            g.DrawLine(System.Drawing.Pens.Red, initialX-1, 0, initialX-1, 5000);
-            g.DrawLine(System.Drawing.Pens.Red, 0, initialY-1, 5000, initialY-1);
+            g.DrawLine(System.Drawing.Pens.Red, initialX, 0, initialX, 5000);
+            g.DrawLine(System.Drawing.Pens.Red, 0, initialY, 5000, initialY);
 
             g.DrawLine(System.Drawing.Pens.Red, relativePoint.X, 0, relativePoint.X, 5000);
             g.DrawLine(System.Drawing.Pens.Red, 0, relativePoint.Y, 5000, relativePoint.Y);
