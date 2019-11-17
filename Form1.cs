@@ -181,6 +181,7 @@ namespace DocuShotter
             {
                 Hide();
                 notifyIcon1.Visible = true;
+                notifyIcon1.ShowBalloonTip(1000);
             }
         }
 
@@ -196,6 +197,19 @@ namespace DocuShotter
             Show();
             this.WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDlg = folderBrowserDialog1;
+            folderDlg.ShowNewFolderButton = true;
+            // Show the FolderBrowserDialog.  
+            DialogResult result = folderDlg.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                textBox1.Text = folderDlg.SelectedPath;
+                Environment.SpecialFolder root = folderDlg.RootFolder;
+            }
         }
     }
 }
