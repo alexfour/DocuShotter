@@ -45,7 +45,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -174,14 +173,6 @@
             this.checkBox1.Text = "Prompt for description";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(350, 215);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 17;
-            this.textBox4.Text = "0";
-            // 
             // textBox5
             // 
             this.textBox5.Location = new System.Drawing.Point(12, 197);
@@ -206,7 +197,6 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button2);
@@ -248,7 +238,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label6;
     }
