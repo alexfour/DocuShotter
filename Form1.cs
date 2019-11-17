@@ -102,15 +102,19 @@ namespace DocuShotter
                         resultingNum = curNum.ToString().PadLeft(length, '0');
                     }
 
-                    using (NamePrompt form = new NamePrompt())
+                    if (checkBox1.Checked)
                     {
-                        if (form.ShowDialog() == DialogResult.OK)
+                        using (NamePrompt form = new NamePrompt())
                         {
-                            //Create a property in SetIPAddressForm to return the input of user.
-                            description = form.screenshotName;
-                            Console.WriteLine("Desc: " + description);
+                            if (form.ShowDialog() == DialogResult.OK)
+                            {
+                                //Create a property in SetIPAddressForm to return the input of user.
+                                description = form.screenshotName;
+                                Console.WriteLine("Desc: " + description);
+                            }
                         }
                     }
+
 
                     //var directory = new System.IO.DirectoryInfo(savepath + "\\");
                     //var sorted = directory.GetFiles(".").OrderBy(f => f).Last();

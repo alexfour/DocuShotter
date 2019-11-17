@@ -19,6 +19,7 @@ namespace DocuShotter
             InitializeComponent();
             this.AcceptButton = button1;
             button1.DialogResult = DialogResult.OK;
+            TopMost = true;
         }
 
         private void TextBox1_TextChanged(object sender, EventArgs e)
