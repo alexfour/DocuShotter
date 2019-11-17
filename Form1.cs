@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
+/*TODO 
+ * Handle element disposing
+ * Make a tranformation to screenshot
+ * Allow user to set naming/storing/etc. preferences
+ * Change default hotkey from b button
+ * Documentation
+*/
 
 namespace DocuShotter
 {
     public partial class Form1 : Form
     {
-
         private bool isPressed = false; //Track if global hotkey is currently down
+
+        private Timer buttonTimer;
 
         private int initialX = 0;       //Initial X coordinate of the screenshot
         private int initialY = 0;       //Initial Y coordinate of the screenshot
@@ -23,8 +27,8 @@ namespace DocuShotter
         private int shotWidth = 0;      //Width of the screenshot area
         private int shotHeight = 0;     //Height of the screenshot area
 
-        System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Red);
-        System.Drawing.Graphics formGraphics,gra;
+        List<PhotoForm> screenArray = new List<PhotoForm>();
+        DrawForm drawPane;
 
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
@@ -35,14 +39,9 @@ namespace DocuShotter
         [DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(int vKey);
 
-        [DllImport("User32.dll")]
-        public static extern IntPtr GetDC(IntPtr hwnd);
-
-        [DllImport("User32.dll")]
-        public static extern void ReleaseDC(IntPtr hwnd, IntPtr dc);
-
         public Form1()
         {
+            this.DoubleBuffered = true;
             InitializeComponent();
             this.KeyPreview = true;
 
@@ -56,6 +55,7 @@ namespace DocuShotter
         private void Button1_Click(object sender, EventArgs e)
         {
             textBox1.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
+            PrepareForms();
         }
 
         /// <summary>
@@ -74,47 +74,49 @@ namespace DocuShotter
                     g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
                     bmp.Save("screenshot.png");  // saves the image
                     pictureBox1.ImageLocation = "screenshot.png";
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom; 
                 }
             }
+        }
+
+        private void PrepareForms()
+        {
+            for (int i = 0; i < Screen.AllScreens.Length; i++)
+            {
+                PhotoForm newform = new PhotoForm(i);
+                newform.Show();
+                screenArray.Add(newform);
+            }
+            initialX = System.Windows.Forms.Cursor.Position.X;
+            initialY = System.Windows.Forms.Cursor.Position.Y;
+            drawPane = new DrawForm();
+            drawPane.Show();
         }
 
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x0312 && !isPressed)
             {
-                initialX = System.Windows.Forms.Cursor.Position.X;
-                initialY = System.Windows.Forms.Cursor.Position.Y;
-                Console.Write("pressed" + isPressed);
+                //Console.Write("pressed" + isPressed);
                 isPressed = true;
                 InitTimer();
-                //MessageBox.Show("Catched");//You can replace this statement with your desired response to the Hotkey.
+                PrepareForms();
             }
             base.WndProc(ref m);
         }
 
-        //Delete hotkey when form is closed
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Boolean success = Form1.UnregisterHotKey(this.Handle, this.GetType().GetHashCode());//Set hotkey as 'b'
-            if (success == true)
-                MessageBox.Show("Success");
-            else
-                MessageBox.Show("Error");
-        }
-
-        private Timer timer2;
+  
         public void InitTimer()
         {
             Console.WriteLine("inittimer");
 
-            timer2 = new Timer();
-            timer2.Tick += new EventHandler(timer2_Tick);
-            timer2.Interval = 16; // in miliseconds
-            timer2.Start();
+            buttonTimer = new Timer();
+            buttonTimer.Tick += new EventHandler(ButtonTimer_Tick);
+            buttonTimer.Interval = 16; // in miliseconds
+            buttonTimer.Start();
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
+        private void ButtonTimer_Tick(object sender, EventArgs e)
         {
             Console.WriteLine("timertick");
             short keyState = GetAsyncKeyState(0x42);
@@ -122,21 +124,13 @@ namespace DocuShotter
             //Check if the MSB is set. If so, then the key is pressed.
             bool prntScrnIsPressed = ((keyState >> 15) & 0x0001) == 0x0001;
 
-            if (prntScrnIsPressed)
-            {
-                //IntPtr desktopPtr = GetDC(IntPtr.Zero);
-                //Graphics gra = Graphics.FromHdc(desktopPtr);
-                //SolidBrush b = new SolidBrush(Color.White);
-                //gra.FillRectangle(b, new Rectangle(initialX, initialY, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
-                //formGraphics.FillRectangle(myBrush, new Rectangle(initialX, initialY, System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y));
-                Console.WriteLine("pressed still");
-                //gra.Dispose();
-                //ReleaseDC(IntPtr.Zero, desktopPtr);
-            }
-            else
+            if (!prntScrnIsPressed)
             {
                 Console.WriteLine("released" + isPressed);//TODO Execute client code...
-                timer2.Stop();
+                //myBrush.Dispose();
+                //formGraphics.Dispose();
+
+                buttonTimer.Stop();
                 isPressed = false;
                 endX = System.Windows.Forms.Cursor.Position.X;
                 endY = System.Windows.Forms.Cursor.Position.Y;
@@ -159,7 +153,26 @@ namespace DocuShotter
                 shotWidth = Math.Abs(initialX - endX);
                 shotHeight = Math.Abs(initialY - endY);
                 TakeScreenShot(shotWidth, shotHeight);
+
+                for (int i=0; i<screenArray.Count;i++)
+                {
+                    screenArray[i].Dispose();
+                }
+                drawPane.Dispose();
+                //PhotoFormVar.Dispose();
             }
+        }
+
+        //Delete hotkey when form is closed
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Boolean success = Form1.UnregisterHotKey(this.Handle, this.GetType().GetHashCode());//Set hotkey as 'b'
+            if (success == true)
+                Console.WriteLine("Success");
+            else
+                Console.WriteLine("Error");
+
+            //formGraphics.Dispose();
         }
     }
 }
