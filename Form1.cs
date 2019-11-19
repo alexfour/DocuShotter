@@ -33,15 +33,13 @@ namespace DocuShotter
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("User32.dll")]
-        private static extern short GetAsyncKeyState(int vKey);
-
         public Form1()
         {
             this.DoubleBuffered = true;
             InitializeComponent();
             this.KeyPreview = true;
             drawPane = new DrawForm(this);
+
 
             Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
@@ -53,7 +51,10 @@ namespace DocuShotter
         private void Button1_Click(object sender, EventArgs e)
         {
             TakeBackgroundShot();
-            drawPane.Setup();
+            if (radioButton1.Checked)
+                drawPane.Setup(0);
+            if (radioButton2.Checked)
+                drawPane.Setup(1);
         }
 
         /// <summary>
@@ -117,6 +118,9 @@ namespace DocuShotter
             }
         }
 
+        /// <summary>
+        /// Takes a screenshot of all monitors and saves it to the executable directory as "background"
+        /// </summary>
         private void TakeBackgroundShot()
         {
             // Determine the size of the "virtual screen", which includes all monitors.
@@ -139,13 +143,21 @@ namespace DocuShotter
             }
         }
 
+        /// <summary>
+        /// Listens for a global hotkey press.
+        /// Once pressed initiates the screenshot procedure by calling DrawForm.Setup function
+        /// </summary>
+        /// <param name="m"></param>
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == 0x0312 && !isPressed)
             {
                 isPressed = true;
                 TakeBackgroundShot();
-                drawPane.Setup();
+                if (radioButton1.Checked)
+                    drawPane.Setup(0);
+                if (radioButton2.Checked)
+                    drawPane.Setup(1);
             }
             base.WndProc(ref m);
         }
