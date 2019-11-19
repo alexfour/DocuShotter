@@ -39,6 +39,9 @@ namespace DocuShotter
             var relativePoint = this.PointToClient(Cursor.Position);
             initialX = relativePoint.X;
             initialY = relativePoint.Y;
+
+            pictureBox1.ImageLocation = "multiple.png";
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
         public void InitTimer()

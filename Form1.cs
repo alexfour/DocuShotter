@@ -14,6 +14,11 @@ using System.Windows.Forms;
  * Documentation
 */
 
+/*WEKO
+*  PhotoForm class is unneccary as you can take a screenshot off allscreens and set it as background
+*  Create DrawForm and store it in the background so a new form doesnt need to be created everytime
+*/
+
 namespace DocuShotter
 {
     public partial class Form1 : Form
@@ -59,8 +64,29 @@ namespace DocuShotter
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            textBox1.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
-            PrepareForms();
+            //textBox1.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
+            //PrepareForms();
+
+            // Determine the size of the "virtual screen", which includes all monitors.
+            int screenLeft = SystemInformation.VirtualScreen.Left;
+            int screenTop = SystemInformation.VirtualScreen.Top;
+            int screenWidth = SystemInformation.VirtualScreen.Width;
+            int screenHeight = SystemInformation.VirtualScreen.Height;
+
+            // Create a bitmap of the appropriate size to receive the screenshot.
+            using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+            {
+                // Draw the screenshot into our bitmap.
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                }
+
+
+                // Do something with the Bitmap here, like save it to a file:
+                bmp.Save("multiple.png");
+            }
+
         }
 
         /// <summary>
@@ -175,7 +201,7 @@ namespace DocuShotter
 
             if (!hotkeyScrnIsPressed | !ctrlScrnIsPressed)
             {
-                drawPane.Dispose();
+               
                 Console.WriteLine("released" + isPressed);//TODO Execute client code...
                 //myBrush.Dispose();
                 //formGraphics.Dispose();
@@ -203,7 +229,7 @@ namespace DocuShotter
                 shotWidth = Math.Abs(initialX - endX);
                 shotHeight = Math.Abs(initialY - endY);
                 TakeScreenShot(shotWidth, shotHeight);
-
+                drawPane.Dispose();
                 for (int i=0; i<screenArray.Count;i++)
                 {
                     screenArray[i].Dispose();
