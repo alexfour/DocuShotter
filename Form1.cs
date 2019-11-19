@@ -27,6 +27,8 @@ namespace DocuShotter
 
         private DrawForm drawPane;
 
+        private Timer delayTimer;
+
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
 
@@ -153,13 +155,26 @@ namespace DocuShotter
             if (m.Msg == 0x0312 && !isPressed)
             {
                 isPressed = true;
-                TakeBackgroundShot();
-                if (radioButton1.Checked)
-                    drawPane.Setup(0);
-                if (radioButton2.Checked)
-                    drawPane.Setup(1);
+
+                int delay = Int32.Parse(textBox3.Text);
+                delayTimer = new Timer();
+                delayTimer.Tick += new EventHandler(DelayTimer_Tick);
+                delayTimer.Interval = delay*1000+1; // in miliseconds
+                delayTimer.Start();
             }
             base.WndProc(ref m);
+        }
+
+        private void DelayTimer_Tick(object sender, EventArgs e)
+        {
+            delayTimer.Stop();
+            delayTimer.Dispose();
+
+            TakeBackgroundShot();
+            if (radioButton1.Checked)
+                drawPane.Setup(0);
+            if (radioButton2.Checked)
+                drawPane.Setup(1);
         }
 
         //Delete hotkey when form is closed
