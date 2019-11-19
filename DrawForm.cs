@@ -60,8 +60,6 @@ namespace DocuShotter
 
         public void Setup(int mode)
         {
-            initialBox = false;
-
             pictureBox1.ImageLocation = @"background";
 
             this.Show();
