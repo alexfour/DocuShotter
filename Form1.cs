@@ -23,19 +23,20 @@ namespace DocuShotter
 {
     public partial class Form1 : Form
     {
-        private bool isPressed = false; //Track if global hotkey is currently down
+        public bool isPressed = false; //Track if global hotkey is currently down
 
         private Timer buttonTimer;
 
-        private int initialX = 0;       //Initial X coordinate of the screenshot
-        private int initialY = 0;       //Initial Y coordinate of the screenshot
+        //private int initialX = 0;       //Initial X coordinate of the screenshot
+        //private int initialY = 0;       //Initial Y coordinate of the screenshot
         private int endX = 0;           //Destination X coordinate of the screenshot
         private int endY = 0;           //Destination Y coordinate of the screenshot
         private int shotWidth = 0;      //Width of the screenshot area
         private int shotHeight = 0;     //Height of the screenshot area
         private int startNum, curNum = 0;
 
-        private string savepath, prefix, description= "";
+        public static string savepath;
+        private string prefix, description= "";
 
         List<PhotoForm> screenArray = new List<PhotoForm>();
         DrawForm drawPane;
@@ -54,6 +55,7 @@ namespace DocuShotter
             this.DoubleBuffered = true;
             InitializeComponent();
             this.KeyPreview = true;
+            drawPane = new DrawForm(this);
 
             Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
@@ -64,29 +66,13 @@ namespace DocuShotter
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            //textBox1.Text = System.Windows.Forms.Cursor.Position.X + " " + System.Windows.Forms.Cursor.Position.Y;
-            //PrepareForms();
+            TakeBackgroundShot();
+            drawPane.Setup();
+        }
 
-            // Determine the size of the "virtual screen", which includes all monitors.
-            int screenLeft = SystemInformation.VirtualScreen.Left;
-            int screenTop = SystemInformation.VirtualScreen.Top;
-            int screenWidth = SystemInformation.VirtualScreen.Width;
-            int screenHeight = SystemInformation.VirtualScreen.Height;
-
-            // Create a bitmap of the appropriate size to receive the screenshot.
-            using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
-            {
-                // Draw the screenshot into our bitmap.
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
-                }
-
-
-                // Do something with the Bitmap here, like save it to a file:
-                bmp.Save("multiple.png");
-            }
-
+        public void SetValues(int width,int height, int inX, int inY)
+        {
+            
         }
 
         /// <summary>
@@ -95,7 +81,7 @@ namespace DocuShotter
         /// </summary>
         /// <param name="width">Width of the screenshot area</param>
         /// <param name="height">Height of the screenshot area</param>
-        private void TakeScreenShot(int width, int height)
+        public void TakeScreenShot(int width, int height, int initialX, int initialY)
         {
             if (width > 0 && height > 0)
             {
@@ -147,22 +133,46 @@ namespace DocuShotter
                     Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + description + ".png");
                     bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
                     pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom; 
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
                 }
+            }
+        }
+
+        private void TakeBackgroundShot()
+        {
+            // Determine the size of the "virtual screen", which includes all monitors.
+            int screenLeft = SystemInformation.VirtualScreen.Left;
+            int screenTop = SystemInformation.VirtualScreen.Top;
+            int screenWidth = SystemInformation.VirtualScreen.Width;
+            int screenHeight = SystemInformation.VirtualScreen.Height;
+
+            // Create a bitmap of the appropriate size to receive the screenshot.
+            using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+            {
+                // Draw the screenshot into our bitmap.
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                }
+
+
+                // Do something with the Bitmap here, like save it to a file:
+                bmp.Save("multiple");
             }
         }
 
         private void PrepareForms()
         {
-            for (int i = 0; i < Screen.AllScreens.Length; i++)
-            {
-                PhotoForm newform = new PhotoForm(i);
-                newform.Show();
-                screenArray.Add(newform);
-            }
-            initialX = System.Windows.Forms.Cursor.Position.X;
-            initialY = System.Windows.Forms.Cursor.Position.Y;
-            drawPane = new DrawForm();
+            TakeBackgroundShot();
+            //for (int i = 0; i < Screen.AllScreens.Length; i++)
+            //{
+            //    PhotoForm newform = new PhotoForm(i);
+            //   newform.Show();
+            //   screenArray.Add(newform);
+            //}
+            //initialX = System.Windows.Forms.Cursor.Position.X;
+            //initialY = System.Windows.Forms.Cursor.Position.Y;
+            drawPane = new DrawForm(this);
             drawPane.Show();
         }
 
@@ -172,8 +182,10 @@ namespace DocuShotter
             {
                 //Console.Write("pressed" + isPressed);
                 isPressed = true;
-                InitTimer();
-                PrepareForms();
+                //InitTimer();
+                TakeBackgroundShot();
+                drawPane.Setup();
+                //PrepareForms();
             }
             base.WndProc(ref m);
         }
@@ -210,32 +222,33 @@ namespace DocuShotter
                 isPressed = false;
                 endX = System.Windows.Forms.Cursor.Position.X;
                 endY = System.Windows.Forms.Cursor.Position.Y;
+                /*
+                                //Swap X and Y values to allow screenshotting both ways
+                                if (endX < initialX)
+                                {
+                                    int oldinitialX = initialX;
+                                    initialX = endX;
+                                    endX = oldinitialX;
+                                }
 
-                //Swap X and Y values to allow screenshotting both ways
-                if (endX < initialX)
-                {
-                    int oldinitialX = initialX;
-                    initialX = endX;
-                    endX = oldinitialX;
-                }
+                                if (endY < initialY)
+                                {
+                                    int oldinitialY = initialY;
+                                    initialY = endY;
+                                    endY = oldinitialY;
+                                }                
 
-                if (endY < initialY)
-                {
-                    int oldinitialY = initialY;
-                    initialY = endY;
-                    endY = oldinitialY;
-                }                
+                                shotWidth = Math.Abs(initialX - endX);
+                                shotHeight = Math.Abs(initialY - endY);
+                                TakeScreenShot(shotWidth, shotHeight);
+                                drawPane.Dispose();
+                                for (int i=0; i<screenArray.Count;i++)
+                                {
+                                    screenArray[i].Dispose();
+                                }
 
-                shotWidth = Math.Abs(initialX - endX);
-                shotHeight = Math.Abs(initialY - endY);
-                TakeScreenShot(shotWidth, shotHeight);
-                drawPane.Dispose();
-                for (int i=0; i<screenArray.Count;i++)
-                {
-                    screenArray[i].Dispose();
-                }
-
-                //PhotoFormVar.Dispose();
+                                //PhotoFormVar.Dispose();
+                            */
             }
         }
 
