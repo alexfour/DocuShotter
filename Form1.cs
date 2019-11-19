@@ -27,12 +27,12 @@ namespace DocuShotter
 
         private Timer buttonTimer;
 
-        //private int initialX = 0;       //Initial X coordinate of the screenshot
-        //private int initialY = 0;       //Initial Y coordinate of the screenshot
+        private int initialX = 0;       //Initial X coordinate of the screenshot
+        private int initialY = 0;       //Initial Y coordinate of the screenshot
         private int endX = 0;           //Destination X coordinate of the screenshot
         private int endY = 0;           //Destination Y coordinate of the screenshot
-        private int shotWidth = 0;      //Width of the screenshot area
-        private int shotHeight = 0;     //Height of the screenshot area
+        private int width = 0;      //Width of the screenshot area
+        private int height = 0;     //Height of the screenshot area
         private int startNum, curNum = 0;
 
         public static string savepath;
@@ -72,7 +72,10 @@ namespace DocuShotter
 
         public void SetValues(int width,int height, int inX, int inY)
         {
-            
+            this.width = width;
+            this.height = height;
+            this.initialX = inX;
+            this.initialY = inY;
         }
 
         /// <summary>

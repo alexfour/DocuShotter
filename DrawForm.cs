@@ -18,7 +18,6 @@ namespace DocuShotter
         private int shotHeight = 0;     //Height of the screenshot area
 
         private Form1 formis;
-
         private Timer mainTimer;
         Timer hidetimer;
 
@@ -75,13 +74,12 @@ namespace DocuShotter
         {
             endX = System.Windows.Forms.Cursor.Position.X;
             endY = System.Windows.Forms.Cursor.Position.Y;
-
             CalculateDimensions();
 
             mousePressed = false;
             pictureBox1.ImageLocation = null;
             mainTimer.Stop();
-            formis.SetValues(shotWidth, shotHeight, initialX, initialY);
+            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
             formis.isPressed = false;
             hidetimer = new Timer();
             hidetimer.Tick += new EventHandler(Hidetimer_Tick);

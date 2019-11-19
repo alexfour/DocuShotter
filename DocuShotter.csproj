@@ -67,12 +67,6 @@
     <Compile Include="NamePrompt.Designer.cs">
       <DependentUpon>NamePrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="PhotoForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PhotoForm.Designer.cs">
-      <DependentUpon>PhotoForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DrawForm.resx">
@@ -83,9 +77,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NamePrompt.resx">
       <DependentUpon>NamePrompt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PhotoForm.resx">
-      <DependentUpon>PhotoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
