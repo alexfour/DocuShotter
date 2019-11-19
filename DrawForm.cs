@@ -55,7 +55,7 @@ namespace DocuShotter
 
         public void Setup()
         {
-            pictureBox1.ImageLocation = "multiple";
+            pictureBox1.ImageLocation = "background";
             this.Show();
         }
 
@@ -75,12 +75,13 @@ namespace DocuShotter
             endX = System.Windows.Forms.Cursor.Position.X;
             endY = System.Windows.Forms.Cursor.Position.Y;
             CalculateDimensions();
-
             mousePressed = false;
             pictureBox1.ImageLocation = null;
             mainTimer.Stop();
+
             formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
             formis.isPressed = false;
+
             hidetimer = new Timer();
             hidetimer.Tick += new EventHandler(Hidetimer_Tick);
             hidetimer.Interval = 15; // in miliseconds
@@ -102,14 +103,12 @@ namespace DocuShotter
                 initialX = endX;
                 endX = oldinitialX;
             }
-
             if (endY < initialY)
             {
                 int oldinitialY = initialY;
                 initialY = endY;
                 endY = oldinitialY;
             }
-
             shotWidth = Math.Abs(initialX - endX);
             shotHeight = Math.Abs(initialY - endY);
         }
