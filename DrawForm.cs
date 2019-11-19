@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DocuShotter
@@ -22,10 +23,9 @@ namespace DocuShotter
         private Timer mainTimer;
         Timer hidetimer;
 
-
         private bool mousePressed,released = false;
 
-        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        [DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(int vKey);
 
         public DrawForm(Form1 f)
@@ -60,7 +60,10 @@ namespace DocuShotter
 
         public void Setup(int mode)
         {
-            pictureBox1.ImageLocation = "background";
+            initialBox = false;
+
+            pictureBox1.ImageLocation = @"background";
+
             this.Show();
             this.mode = mode;
             Console.WriteLine(mode);
@@ -139,12 +142,12 @@ namespace DocuShotter
 
         public void InitTimer()
         {
-            mainTimer.Tick += new EventHandler(mainTimer_Tick);
-            mainTimer.Interval = 16; // in miliseconds
+            mainTimer.Tick += new EventHandler(MainTimer_Tick);
+            mainTimer.Interval = 8; // in milliseconds
             mainTimer.Start();
         }
 
-        private void mainTimer_Tick(object sender, EventArgs e)
+        private void MainTimer_Tick(object sender, EventArgs e)
         {
             pictureBox1.Invalidate();
 

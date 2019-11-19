@@ -159,7 +159,7 @@ namespace DocuShotter
                 int delay = Int32.Parse(textBox3.Text);
                 delayTimer = new Timer();
                 delayTimer.Tick += new EventHandler(DelayTimer_Tick);
-                delayTimer.Interval = delay*1000+1; // in miliseconds
+                delayTimer.Interval = delay*1000+1; // in milliseconds
                 delayTimer.Start();
             }
             base.WndProc(ref m);
