@@ -60,7 +60,7 @@ namespace DocuShotter
 
         public void Setup(int mode)
         {
-            pictureBox1.ImageLocation = @"background";
+            pictureBox1.ImageLocation = AppDomain.CurrentDomain.BaseDirectory + "background";
 
             this.Show();
             this.mode = mode;

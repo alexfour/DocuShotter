@@ -141,7 +141,7 @@ namespace DocuShotter
                 }
 
                 // Do something with the Bitmap here, like save it to a file:
-                bmp.Save("background");
+                bmp.Save(AppDomain.CurrentDomain.BaseDirectory + "background");
             }
         }
 
