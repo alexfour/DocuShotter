@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 /*TODO 
  * Allow customization of hotkey
- * DrawForm close remove monitorX images
  * Hotkey to remove last screenshot
 */
 
@@ -201,6 +200,8 @@ namespace DocuShotter
             else
                 Console.WriteLine("Error");
 
+            
+            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "background");
             drawPane.Dispose();
             notifyIcon1.Dispose();
         }
