@@ -9,8 +9,8 @@ namespace DocuShotter
     {
         private Font fnt = new Font("Arial", 10);
 
-        private int relativeX, relativeY;
-
+        private int relativeX;          //X coordinate relative to the form
+        private int relativeY;          //Y coordinate relative to the form
         private int initialX = 0;       //Initial X coordinate of the screenshot
         private int initialY = 0;       //Initial Y coordinate of the screenshot
         private int endX = 0;           //Destination X coordinate of the screenshot
@@ -19,9 +19,9 @@ namespace DocuShotter
         private int shotHeight = 0;     //Height of the screenshot area
         private int mode = 0;
 
-        private Form1 formis;
-        private Timer mainTimer;
-        Timer hidetimer;
+        private Form1 formis;           //Object holder for the main Form1
+        private Timer mainTimer;        //Timer object that fires whenever this form is show and causes invalidates
+        Timer hidetimer;                //Timer that hides the form after it is no longer needed
 
         private bool mousePressed,released = false;
 
@@ -186,14 +186,16 @@ namespace DocuShotter
             var relativePoint = this.PointToClient(Cursor.Position);
             // Create a local version of the graphics object for the PictureBox.
             Graphics g = e.Graphics;
+            g.FillRectangle(new SolidBrush(Color.White), new Rectangle(relativePoint.X + 0, relativePoint.Y - 15, 60, 15));
+            g.DrawString(relativePoint.X + "-" + relativePoint.Y, fnt, new SolidBrush(Color.Black), relativePoint.X + 0, relativePoint.Y - 15, System.Drawing.StringFormat.GenericDefault);
+
+            g.DrawLine(System.Drawing.Pens.Red, relativePoint.X, 0, relativePoint.X, 5000);
+            g.DrawLine(System.Drawing.Pens.Red, 0, relativePoint.Y, 5000, relativePoint.Y);
 
             if (mousePressed)
             {
                 g.DrawLine(System.Drawing.Pens.Red, relativeX, 0, relativeX, 5000);
                 g.DrawLine(System.Drawing.Pens.Red, 0, relativeY, 5000, relativeY);
-
-                g.DrawLine(System.Drawing.Pens.Red, relativePoint.X, 0, relativePoint.X, 5000);
-                g.DrawLine(System.Drawing.Pens.Red, 0, relativePoint.Y, 5000, relativePoint.Y);
             }
         }
     }

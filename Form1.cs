@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -7,34 +6,36 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 /*TODO 
- * Handle element disposing
- * Change default hotkey from b button
- * Dispose tray icon
- * PhotoForm close remove monitorX images
+ * Allow customization of hotkey
+ * DrawForm close remove monitorX images
  * Hotkey to remove last screenshot
- * Documentation
 */
 
 namespace DocuShotter
 {
     public partial class Form1 : Form
     {
-        public bool isPressed = false;                  //Track if global hotkey is currently down
+        public bool isPressed = false;          //Track if global hotkey is currently down
 
-        private int startNum, curNum = 0;               //Track current naming number
+        private int startNum, curNum = 0;        //Track current naming number
 
-        private string savepath, prefix, description= "";
+        private string savepath =  "";           //Path to the folder where images are saved
+        private string prefix = "";              //Holds the prefix that is prepended to the filename
+        private string description = "";         //Hold the description that is appended to the filename
 
-        private DrawForm drawPane;
+        private DrawForm drawPane;               //Holds the DrawForm object that is used to take the screenshot
 
-        private Timer delayTimer;
+        private Timer delayTimer;               //Handles the delay set by the user
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll")]               //Loading a DLL for the RegisterHotkey function
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll")]               //Loading a DLL for the UnregisterHotKey function
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        /// <summary>
+        /// Constructor for the Form1 class.
+        /// </summary>
         public Form1()
         {
             this.DoubleBuffered = true;
@@ -50,6 +51,11 @@ namespace DocuShotter
                 Console.WriteLine("Error registering hotkey");
         }
 
+        /// <summary>
+        /// Screenshot button on the form. Performs the same as the hotkey feature.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
             TakeBackgroundShot();
@@ -165,6 +171,11 @@ namespace DocuShotter
             base.WndProc(ref m);
         }
 
+        /// <summary>
+        /// Tick function for delayTimer that allows for delayed screenshot.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DelayTimer_Tick(object sender, EventArgs e)
         {
             delayTimer.Stop();
@@ -176,11 +187,15 @@ namespace DocuShotter
             if (radioButton2.Checked)
                 drawPane.Setup(1);
         }
-
-        //Delete hotkey when form is closed
+        
+        /// <summary>
+        /// Form closing function that handles unregistering the global hotkey and disposing of elements.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Boolean success = Form1.UnregisterHotKey(this.Handle, this.GetType().GetHashCode());//Set hotkey as 'b'
+            Boolean success = Form1.UnregisterHotKey(this.Handle, this.GetType().GetHashCode());    //Delete hotkey when form is closed
             if (success == true)
                 Console.WriteLine("Success");
             else
@@ -214,6 +229,11 @@ namespace DocuShotter
             notifyIcon1.Visible = false;
         }
 
+        /// <summary>
+        /// Button function for handling a FolderBrowserDialog to assist user in choosing a folder for their pictures.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button2_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderDlg = folderBrowserDialog1;
