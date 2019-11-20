@@ -189,14 +189,23 @@ namespace DocuShotter
             g.FillRectangle(new SolidBrush(Color.White), new Rectangle(relativePoint.X + 0, relativePoint.Y - 15, 60, 15));
             g.DrawString(relativePoint.X + "-" + relativePoint.Y, fnt, new SolidBrush(Color.Black), relativePoint.X + 0, relativePoint.Y - 15, System.Drawing.StringFormat.GenericDefault);
 
-            g.DrawLine(System.Drawing.Pens.Red, relativePoint.X, 0, relativePoint.X, 5000);
-            g.DrawLine(System.Drawing.Pens.Red, 0, relativePoint.Y, 5000, relativePoint.Y);
-
             if (mousePressed)
             {
+                g.FillRectangle(new SolidBrush(Color.White), new Rectangle(relativeX + 0, relativeY - 15, 60, 15));
+                g.DrawString(relativeX + "-" + relativeY, fnt, new SolidBrush(Color.Black), relativeX + 0, relativeY - 15, System.Drawing.StringFormat.GenericDefault);
+
+                shotWidth = Math.Abs(initialX - System.Windows.Forms.Cursor.Position.X);
+                shotHeight = Math.Abs(initialY - System.Windows.Forms.Cursor.Position.Y);
+                g.FillRectangle(new SolidBrush(Color.White), new Rectangle(relativePoint.X + 0, relativePoint.Y + 20, 80, 30));
+                g.DrawString("Width = " + shotWidth, fnt, new SolidBrush(Color.Black), relativePoint.X + 0, relativePoint.Y + 20, System.Drawing.StringFormat.GenericDefault);
+                g.DrawString("Height = " + shotHeight, fnt, new SolidBrush(Color.Black), relativePoint.X + 0, relativePoint.Y + 35, System.Drawing.StringFormat.GenericDefault);
+
                 g.DrawLine(System.Drawing.Pens.Red, relativeX, 0, relativeX, 5000);
                 g.DrawLine(System.Drawing.Pens.Red, 0, relativeY, 5000, relativeY);
             }
+
+            g.DrawLine(System.Drawing.Pens.Red, relativePoint.X, 0, relativePoint.X, 5000);
+            g.DrawLine(System.Drawing.Pens.Red, 0, relativePoint.Y, 5000, relativePoint.Y);
         }
     }
 }
