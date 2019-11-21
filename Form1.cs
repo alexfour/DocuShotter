@@ -78,7 +78,7 @@ namespace DocuShotter
         {
             if (button3.Text == "<")
             {
-                this.Width = 210;
+                this.Width = 201;
                 pictureBox1.Visible = false;
                 button3.Text = ">";
             }
@@ -268,7 +268,7 @@ namespace DocuShotter
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Button2_Click(object sender, EventArgs e)
+        private void TextBox1_MouseClick(object sender, MouseEventArgs e)
         {
             FolderBrowserDialog folderDlg = folderBrowserDialog1;
             folderDlg.ShowNewFolderButton = true;
