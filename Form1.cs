@@ -42,6 +42,16 @@ namespace DocuShotter
             this.KeyPreview = true;
             drawPane = new DrawForm(this);
 
+            textBox1.Text = Properties.Settings.Default.myPath;
+            textBox2.Text = Properties.Settings.Default.myPrefix;
+            textBox3.Text = Properties.Settings.Default.myDelay;
+
+            if (Properties.Settings.Default.myMode == 0)
+                radioButton1.Checked = true;
+            else
+                radioButton2.Checked = true;
+
+            checkBox1.Checked = (Properties.Settings.Default.myPrompt) ? true : false; 
 
             Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
@@ -204,6 +214,13 @@ namespace DocuShotter
             File.Delete(AppDomain.CurrentDomain.BaseDirectory + "background");
             drawPane.Dispose();
             notifyIcon1.Dispose();
+
+            Properties.Settings.Default.myPath = textBox1.Text;
+            Properties.Settings.Default.myPrefix = textBox2.Text;
+            Properties.Settings.Default.myDelay = textBox3.Text;
+            Properties.Settings.Default.myMode = (radioButton1.Checked) ? 0 : 1;
+            Properties.Settings.Default.myPrompt = (checkBox1.Checked) ? true : false;
+            Properties.Settings.Default.Save();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
