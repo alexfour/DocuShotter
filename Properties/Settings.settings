@@ -17,8 +17,5 @@
     <Setting Name="myPrompt" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="myHide" Type="System.String" Scope="User">
-      <Value Profile="(Default)">&lt;</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
