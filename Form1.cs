@@ -74,6 +74,22 @@ namespace DocuShotter
                 drawPane.Setup(1);
         }
 
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            if (button3.Text == "<")
+            {
+                this.Width = 210;
+                pictureBox1.Visible = false;
+                button3.Text = ">";
+            }
+            else
+            {
+                this.Width = 816;
+                pictureBox1.Visible = true;
+                button3.Text = "<";
+            }
+        }
+
         /// <summary>
         /// Function for taking a screenshot. 
         /// First crafts the name from the given parameters such as prefix, curNum and description
