@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -8,20 +9,22 @@ using System.Windows.Forms;
 /*TODO 
  * Allow customization of hotkey
  * Hotkey to remove last screenshot
- * opacity while screenshotting
 */
 
 namespace DocuShotter
 {
     public partial class Form1 : Form
     {
-        public bool isPressed = false;          //Track if global hotkey is currently down
+        public bool isPressed, hidden;          //Track if global hotkey is currently down, track if Form1 is hidden
 
         private int startNum, curNum = 0;        //Track current naming number
 
         private string savepath =  "";           //Path to the folder where images are saved
         private string prefix = "";              //Holds the prefix that is prepended to the filename
         private string description = "";         //Hold the description that is appended to the filename
+        string hotkeyText = "";
+        Keys hotkeyControl;
+        Keys hotkeyLetterNumeric;
 
         private DrawForm drawPane;               //Holds the DrawForm object that is used to take the screenshot
 
@@ -33,26 +36,49 @@ namespace DocuShotter
         [DllImport("user32.dll")]               //Loading a DLL for the UnregisterHotKey function
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        [DllImport("user32.dll")]
+        static extern bool HideCaret(IntPtr hWnd);
+
         /// <summary>
         /// Constructor for the Form1 class.
         /// </summary>
         public Form1()
         {
+
             this.DoubleBuffered = true;
             InitializeComponent();
             this.KeyPreview = true;
             drawPane = new DrawForm(this);
-
+            
             textBox1.Text = Properties.Settings.Default.myPath;
             textBox2.Text = Properties.Settings.Default.myPrefix;
             textBox3.Text = Properties.Settings.Default.myDelay;
+
+            button3.Text = Properties.Settings.Default.myHide;
+            hidden = (button3.Text == "<") ? false : true;
+            ChangeSize();
 
             if (Properties.Settings.Default.myMode == 0)
                 radioButton1.Checked = true;
             else
                 radioButton2.Checked = true;
 
-            checkBox1.Checked = (Properties.Settings.Default.myPrompt) ? true : false; 
+            checkBox1.Checked = (Properties.Settings.Default.myPrompt) ? true : false;
+
+
+            // Bind combobox to dictionary
+            Dictionary<string, string> comboboxValues = new Dictionary<string, string>();
+            comboboxValues.Add("0x51", "CTRL");
+            comboboxValues.Add("0x52", "SHIFT");
+            comboboxValues.Add("0x53", "ALT");
+            comboboxValues.Add("", "NONE");
+            comboBox1.DataSource = new BindingSource(comboboxValues, null);
+            comboBox1.DisplayMember = "Value";
+            comboBox1.ValueMember = "Key";
+
+            // Get combobox selection (in handler)
+            string value = ((KeyValuePair<string, string>)comboBox1.SelectedItem).Value;
+
 
             Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
@@ -77,7 +103,16 @@ namespace DocuShotter
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            if (button3.Text == "<")
+            hidden = (button3.Text == "<") ? true : false;
+            ChangeSize();
+        }
+
+        /// <summary>
+        /// Change the form size depending on the hidden boolean
+        /// </summary>
+        private void ChangeSize()
+        {
+            if (hidden)
             {
                 this.Width = 201;
                 pictureBox1.Visible = false;
@@ -236,6 +271,7 @@ namespace DocuShotter
             Properties.Settings.Default.myPath = textBox1.Text;
             Properties.Settings.Default.myPrefix = textBox2.Text;
             Properties.Settings.Default.myDelay = textBox3.Text;
+            Properties.Settings.Default.myHide = button3.Text;
             Properties.Settings.Default.myMode = (radioButton1.Checked) ? 0 : 1;
             Properties.Settings.Default.myPrompt = (checkBox1.Checked) ? true : false;
             Properties.Settings.Default.Save();
@@ -256,6 +292,30 @@ namespace DocuShotter
             Show();
             this.WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
+        }
+
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.github.com/alexfour"); 
+        }
+
+        private void TextBox6_KeyDown(object sender, KeyEventArgs e)
+        {
+            textBox6.Text = "";
+            if (char.IsLetterOrDigit((char)e.KeyCode))
+            {
+                textBox6.Text = e.KeyCode.ToString().ToUpper();
+            }
+        }
+
+        private void TextBox6_TextChanged(object sender, EventArgs e)
+        {
+            HideCaret(textBox6.Handle);
+        }
+
+        private void TextBox6_MouseDown(object sender, MouseEventArgs e)
+        {
+            HideCaret(textBox6.Handle);
         }
 
         private void NotifyIcon1_MouseDown(object sender, MouseEventArgs e)

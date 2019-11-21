@@ -82,5 +82,17 @@ namespace DocuShotter.Properties {
                 this["myPrompt"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<")]
+        public string myHide {
+            get {
+                return ((string)(this["myHide"]));
+            }
+            set {
+                this["myHide"] = value;
+            }
+        }
     }
 }
