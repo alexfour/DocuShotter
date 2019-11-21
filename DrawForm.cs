@@ -210,6 +210,25 @@ namespace DocuShotter
         }
 
         /// <summary>
+        /// Exists to give the graphics time to clear the graphics being draw on the screen so that they wont show up in the screenshot
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShotTimer_Tick(object sender, EventArgs e)
+        {
+            formis.Opacity = 100; //Set the main form to be visible again
+            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
+            formis.isPressed = false;
+            shottimer.Stop();
+            shottimer.Dispose();
+            
+            hidetimer = new Timer();
+            hidetimer.Tick += new EventHandler(Hidetimer_Tick);
+            hidetimer.Interval = 15; // in miliseconds
+            hidetimer.Start();
+        }
+
+        /// <summary>
         /// hideTimer tick function that hides the form in 15 milliseconds from when screenshotting process is complete
         /// </summary>
         /// <param name="sender"></param>
@@ -220,24 +239,6 @@ namespace DocuShotter
             hidetimer.Stop();
             hidetimer.Dispose();
             released = false;
-        }
-
-        /// <summary>
-        /// Exists to give the graphics time to clear the graphics being draw on the screen so that they wont show up in the screenshot
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ShotTimer_Tick(object sender, EventArgs e)
-        {
-            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
-            formis.isPressed = false;
-            shottimer.Stop();
-            shottimer.Dispose();
-
-            hidetimer = new Timer();
-            hidetimer.Tick += new EventHandler(Hidetimer_Tick);
-            hidetimer.Interval = 15; // in miliseconds
-            hidetimer.Start();
         }
 
         /// <summary>

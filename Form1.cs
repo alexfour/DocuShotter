@@ -8,6 +8,7 @@ using System.Windows.Forms;
 /*TODO 
  * Allow customization of hotkey
  * Hotkey to remove last screenshot
+ * opacity while screenshotting
 */
 
 namespace DocuShotter
@@ -206,6 +207,7 @@ namespace DocuShotter
             delayTimer.Stop();
             delayTimer.Dispose();
 
+            Opacity = 0;//Hide the main form from the screenshot
             TakeBackgroundShot();
             if (radioButton1.Checked)
                 drawPane.Setup(0);
