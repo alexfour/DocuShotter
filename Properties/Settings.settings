@@ -20,5 +20,17 @@
     <Setting Name="myHide" Type="System.String" Scope="User">
       <Value Profile="(Default)">&lt;</Value>
     </Setting>
+    <Setting Name="hotkeyControl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Ctrl</Value>
+    </Setting>
+    <Setting Name="hotkeyLetter" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Q</Value>
+    </Setting>
+    <Setting Name="hotkeyControlValue" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">17</Value>
+    </Setting>
+    <Setting Name="hotkeyLetterValue" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">81</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

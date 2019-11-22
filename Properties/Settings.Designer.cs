@@ -94,5 +94,53 @@ namespace DocuShotter.Properties {
                 this["myHide"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ctrl")]
+        public string hotkeyControl {
+            get {
+                return ((string)(this["hotkeyControl"]));
+            }
+            set {
+                this["hotkeyControl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q")]
+        public string hotkeyLetter {
+            get {
+                return ((string)(this["hotkeyLetter"]));
+            }
+            set {
+                this["hotkeyLetter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("17")]
+        public int hotkeyControlValue {
+            get {
+                return ((int)(this["hotkeyControlValue"]));
+            }
+            set {
+                this["hotkeyControlValue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("81")]
+        public int hotkeyLetterValue {
+            get {
+                return ((int)(this["hotkeyLetterValue"]));
+            }
+            set {
+                this["hotkeyLetterValue"] = value;
+            }
+        }
     }
 }

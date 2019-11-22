@@ -125,9 +125,9 @@
             this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(100, 20);
             this.textBox6.TabIndex = 5;
-            this.textBox6.Text = "Ctrl + Q";
             this.textBox6.TextChanged += new System.EventHandler(this.TextBox6_TextChanged);
             this.textBox6.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox6_KeyDown);
+            this.textBox6.Leave += new System.EventHandler(this.TextBox6_Leave);
             this.textBox6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TextBox6_MouseDown);
             // 
             // label4
@@ -278,6 +278,7 @@
             this.Name = "Form1";
             this.Text = "DocuShotter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);

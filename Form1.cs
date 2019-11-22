@@ -23,6 +23,10 @@ namespace DocuShotter
         private string savepath =  "";           //Path to the folder where images are saved
         private string prefix = "";              //Holds the prefix that is prepended to the filename
         private string description = "";         //Hold the description that is appended to the filename
+        private string hotkeyctrl;
+        private string hotkeyletter;
+        public int hotkeyctrlkeycode;
+        public int hotkeyletterkeycode;
 
         private DrawForm drawPane;               //Holds the DrawForm object that is used to take the screenshot
 
@@ -62,11 +66,45 @@ namespace DocuShotter
 
             checkBox1.Checked = (Properties.Settings.Default.myPrompt) ? true : false;
 
+            hotkeyctrl = Properties.Settings.Default.hotkeyControl;
+            hotkeyletter = Properties.Settings.Default.hotkeyLetter;
+            hotkeyctrlkeycode = Properties.Settings.Default.hotkeyControlValue;
+            hotkeyletterkeycode = Properties.Settings.Default.hotkeyLetterValue;
+
+            textBox6.Text = hotkeyctrl + " + " + hotkeyletter;
+            ChangeHotkey();
+
             Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
             if (success == true)
                 Console.WriteLine("Hotkey registered");
             else
                 Console.WriteLine("Error registering hotkey");
+        }
+
+        private void ChangeHotkey()
+        {          
+            Boolean success = Form1.UnregisterHotKey(this.Handle, this.GetType().GetHashCode());    //Delete hotkey when form is closed
+            if (success == true)
+                Console.WriteLine("Success");
+            else
+                Console.WriteLine("Error");
+
+           Console.WriteLine(hotkeyctrlkeycode);
+           Console.WriteLine(11 == 0x11);
+
+            if (hotkeyctrlkeycode == 17)
+                success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, hotkeyletterkeycode);    //Control
+            else if (hotkeyctrlkeycode == 0x10)
+                success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0004 | 0x4000, hotkeyletterkeycode);    //Shift
+            else if (hotkeyctrlkeycode == 0x12)
+                success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0001 | 0x4000, hotkeyletterkeycode);    //Alt
+
+            if (success == true)
+                Console.WriteLine("Hotkey registered");
+            else
+                Console.WriteLine("Error registering hotkey");
+
+            
         }
 
         /// <summary>
@@ -256,6 +294,10 @@ namespace DocuShotter
             Properties.Settings.Default.myHide = button3.Text;
             Properties.Settings.Default.myMode = (radioButton1.Checked) ? 0 : 1;
             Properties.Settings.Default.myPrompt = (checkBox1.Checked) ? true : false;
+            Properties.Settings.Default.hotkeyControl = hotkeyctrl;
+            Properties.Settings.Default.hotkeyLetter = hotkeyletter;
+            Properties.Settings.Default.hotkeyControlValue = hotkeyctrlkeycode;
+            Properties.Settings.Default.hotkeyLetterValue = hotkeyletterkeycode;
             Properties.Settings.Default.Save();
         }
 
@@ -284,10 +326,33 @@ namespace DocuShotter
         private void TextBox6_KeyDown(object sender, KeyEventArgs e)
         {
             textBox6.Text = "";
+            if (char.IsControl((char)e.KeyCode))
+            {
+                if (e.KeyCode == Keys.ControlKey)
+                {
+                    hotkeyctrl = "Ctrl";
+                    hotkeyctrlkeycode = e.KeyValue;
+                }
+
+                if (e.KeyCode == Keys.ShiftKey)
+                {
+                    hotkeyctrl = "Shift";
+                    hotkeyctrlkeycode = e.KeyValue;
+                }
+
+                if (e.KeyCode == Keys.Menu)
+                {
+                    hotkeyctrl = "Alt";
+                    hotkeyctrlkeycode = e.KeyValue;
+                }
+            }
             if (char.IsLetterOrDigit((char)e.KeyCode))
             {
-                textBox6.Text = e.KeyCode.ToString().ToUpper();
+                hotkeyletter = e.KeyCode.ToString().ToUpper();
+                hotkeyletterkeycode = e.KeyValue;
             }
+            e.Handled = true;
+            textBox6.Text = hotkeyctrl + " + " + hotkeyletter;
         }
 
         private void TextBox6_TextChanged(object sender, EventArgs e)
@@ -298,6 +363,16 @@ namespace DocuShotter
         private void TextBox6_MouseDown(object sender, MouseEventArgs e)
         {
             HideCaret(textBox6.Handle);
+        }
+
+        private void TextBox6_Leave(object sender, EventArgs e)
+        {
+            ChangeHotkey();
+        }
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            label5.Focus();
         }
 
         private void NotifyIcon1_MouseDown(object sender, MouseEventArgs e)

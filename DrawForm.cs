@@ -179,9 +179,9 @@ namespace DocuShotter
 
             if (mode == 0 && !released)
             {
-                short keyState = GetAsyncKeyState(0x51);
+                short keyState = GetAsyncKeyState(formis.hotkeyctrlkeycode);
 
-                short ctrlkeyState = GetAsyncKeyState(0x11);
+                short ctrlkeyState = GetAsyncKeyState(formis.hotkeyletterkeycode);
 
                 //Check if the MSB is set. If so, then the key is pressed.
                 bool hotkeyScrnIsPressed = ((keyState >> 15) & 0x0001) == 0x0001;
@@ -214,15 +214,15 @@ namespace DocuShotter
         /// <param name="e"></param>
         private void Hidetimer_Tick(object sender, EventArgs e)
         {
-            formis.Opacity = 100; //Set the main form to be visible again
+            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
+            formis.isPressed = false;
 
             this.Hide();
             hidetimer.Stop();
             hidetimer.Dispose();
             released = false;
 
-            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
-            formis.isPressed = false;
+            formis.Opacity = 100; //Set the main form to be visible again
         }
 
         /// <summary>
