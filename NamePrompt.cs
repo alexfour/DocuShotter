@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DocuShotter
@@ -17,6 +10,7 @@ namespace DocuShotter
         public NamePrompt()
         {
             InitializeComponent();
+            //Location = new System.Drawing.Point(System.Windows.Forms.Cursor.Position.X, System.Windows.Forms.Cursor.Position.Y);
             this.AcceptButton = button1;
             button1.DialogResult = DialogResult.OK;
             TopMost = true;
@@ -31,6 +25,11 @@ namespace DocuShotter
         {
             Opacity = 0;
             this.Close();
+        }
+
+        private void NamePrompt_Load(object sender, EventArgs e)
+        {
+            this.SetDesktopLocation(System.Windows.Forms.Cursor.Position.X - this.Width/2 - 50, System.Windows.Forms.Cursor.Position.Y - this.Height/2 - 18);
         }
     }
 }

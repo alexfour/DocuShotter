@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -7,9 +6,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 /*TODO 
- * Check file numbering
- * Allow customization of hotkey
  * Hotkey to remove last screenshot
+ * Esc to stop screenshot
 */
 
 namespace DocuShotter
@@ -73,12 +71,7 @@ namespace DocuShotter
 
             textBox6.Text = hotkeyctrl + " + " + hotkeyletter;
             ChangeHotkey();
-
-            Boolean success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, 0x51);    //Set hotkey as 'b' and try to register a global hotkey
-            if (success == true)
-                Console.WriteLine("Hotkey registered");
-            else
-                Console.WriteLine("Error registering hotkey");
+            label5.Select();
         }
 
         private void ChangeHotkey()
@@ -89,14 +82,11 @@ namespace DocuShotter
             else
                 Console.WriteLine("Error");
 
-           Console.WriteLine(hotkeyctrlkeycode);
-           Console.WriteLine(11 == 0x11);
-
             if (hotkeyctrlkeycode == 17)
                 success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0002 | 0x4000, hotkeyletterkeycode);    //Control
-            else if (hotkeyctrlkeycode == 0x10)
+            else if (hotkeyctrlkeycode == 16)
                 success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0004 | 0x4000, hotkeyletterkeycode);    //Shift
-            else if (hotkeyctrlkeycode == 0x12)
+            else if (hotkeyctrlkeycode == 18)
                 success = Form1.RegisterHotKey(this.Handle, this.GetType().GetHashCode(), 0x0001 | 0x4000, hotkeyletterkeycode);    //Alt
 
             if (success == true)
@@ -114,11 +104,9 @@ namespace DocuShotter
         /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
+            Opacity = 0;//Hide the main form from the screenshot
             TakeBackgroundShot();
-            if (radioButton1.Checked)
-                drawPane.Setup(0);
-            if (radioButton2.Checked)
-                drawPane.Setup(1);
+            drawPane.Setup(1);
         }
 
         private void Button3_Click(object sender, EventArgs e)
@@ -183,7 +171,6 @@ namespace DocuShotter
                         resultingNum = curNum.ToString().PadLeft(length, '0');
                     }
 
-
                     if (checkBox1.Checked)
                     {
                         using (NamePrompt form = new NamePrompt())
@@ -203,6 +190,7 @@ namespace DocuShotter
                     bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
                     pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
                     pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
                 }
             }
         }
@@ -362,17 +350,33 @@ namespace DocuShotter
 
         private void TextBox6_MouseDown(object sender, MouseEventArgs e)
         {
+            textBox6.BackColor = Color.Honeydew;
             HideCaret(textBox6.Handle);
         }
 
         private void TextBox6_Leave(object sender, EventArgs e)
         {
+            textBox6.BackColor = Color.White;
             ChangeHotkey();
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             label5.Focus();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            foreach (var item in this.groupBox1.Controls)
+            {
+                if (item.GetType() == typeof(RadioButton))
+                    ((RadioButton)item).TabStopChanged += new System.EventHandler(TabStopChanged);
+            }
+        }
+
+        private void TabStopChanged(object sender, EventArgs e)
+        {
+            ((RadioButton)sender).TabStop = true;
         }
 
         private void NotifyIcon1_MouseDown(object sender, MouseEventArgs e)

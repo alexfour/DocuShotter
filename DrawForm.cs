@@ -214,14 +214,13 @@ namespace DocuShotter
         /// <param name="e"></param>
         private void Hidetimer_Tick(object sender, EventArgs e)
         {
-            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
-            formis.isPressed = false;
-
             this.Hide();
             hidetimer.Stop();
             hidetimer.Dispose();
             released = false;
 
+            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
+            formis.isPressed = false;
             formis.Opacity = 100; //Set the main form to be visible again
         }
 

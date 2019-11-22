@@ -60,7 +60,7 @@
             this.button1.Location = new System.Drawing.Point(44, 47);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 9;
+            this.button1.TabIndex = 8;
             this.button1.Text = "Screenshot";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
@@ -173,7 +173,7 @@
             this.checkBox1.Location = new System.Drawing.Point(17, 76);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(128, 17);
-            this.checkBox1.TabIndex = 8;
+            this.checkBox1.TabIndex = 9;
             this.checkBox1.Text = "Prompt for description";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -213,6 +213,7 @@
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(50, 17);
             this.radioButton2.TabIndex = 7;
+            this.radioButton2.TabStop = true;
             this.radioButton2.Text = "Draw";
             this.radioButton2.UseVisualStyleBackColor = true;
             // 
@@ -234,7 +235,7 @@
             this.button3.Location = new System.Drawing.Point(146, 418);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(26, 23);
-            this.button3.TabIndex = 22;
+            this.button3.TabIndex = 11;
             this.button3.Text = "<";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
@@ -248,7 +249,7 @@
             this.linkLabel1.Location = new System.Drawing.Point(39, 423);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(101, 13);
-            this.linkLabel1.TabIndex = 23;
+            this.linkLabel1.TabIndex = 10;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "github.com/alexfour";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
@@ -278,6 +279,7 @@
             this.Name = "Form1";
             this.Text = "DocuShotter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
