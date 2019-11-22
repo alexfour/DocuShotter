@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 /*TODO 
+ * Check file numbering
  * Allow customization of hotkey
  * Hotkey to remove last screenshot
 */
@@ -41,7 +42,6 @@ namespace DocuShotter
         /// </summary>
         public Form1()
         {
-
             this.DoubleBuffered = true;
             InitializeComponent();
             this.KeyPreview = true;
@@ -127,7 +127,7 @@ namespace DocuShotter
                 {
                     int length = 3;
                     savepath = textBox1.Text;
-                    prefix = (textBox2.Text == "")? "" : textBox2.Text + "-";
+                    prefix = (textBox2.Text == "") ? "" : textBox2.Text + "-";
                     startNum = Int32.Parse(textBox5.Text);
                     String resultingNum;
 
