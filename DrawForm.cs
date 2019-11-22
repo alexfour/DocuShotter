@@ -24,6 +24,7 @@ namespace DocuShotter
         Timer hidetimer, shottimer;     //Timer that hides the form after it is no longer needed
 
         private bool drawanything;      //Indicates that graphics drawn on screen need to be hidden
+        private bool exitWithoutScrshot;
 
         private bool mousePressed,released = false;
 
@@ -62,6 +63,10 @@ namespace DocuShotter
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
             TopMost = true; // This will bring your window in front of all other windows including the taskbar
+
+
+            this.KeyPreview = true;
+            this.KeyUp += DrawForm_KeyDown;
         }
 
         /// <summary>
@@ -87,6 +92,26 @@ namespace DocuShotter
             }
             InitTimer();
             drawanything = true;
+            exitWithoutScrshot = false;
+        }
+
+        private void DrawForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine(e.KeyValue);
+            if (e.KeyValue == 27)
+            {
+                mousePressed = false;
+                released = true;
+                pictureBox1.Update();
+                mainTimer.Stop();
+
+                formis.isPressed = false;
+
+                this.Hide();
+                released = false;
+                formis.isPressed = false;
+                formis.Opacity = 100; //Set the main form to be visible again
+            }
         }
 
         private void PictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -116,10 +141,13 @@ namespace DocuShotter
                 mainTimer.Stop();
                 pictureBox1.Update();
 
+                released = false;
+
                 hidetimer = new Timer();
                 hidetimer.Tick += new EventHandler(Hidetimer_Tick);
                 hidetimer.Interval = 15; // in milliseconds
                 hidetimer.Start();
+
             }
         }
 
@@ -157,25 +185,6 @@ namespace DocuShotter
         private void MainTimer_Tick(object sender, EventArgs e)
         {
             pictureBox1.Invalidate();
-
-            /*//Check for escape
-            short esckeyState = GetAsyncKeyState(0x1B);
-            bool esckeyIsPressed = ((esckeyState >> 15) & 0x0001) == 0x0001;
-
-            if (esckeyIsPressed)
-            {
-                mousePressed = false;
-                released = true;
-                pictureBox1.Update();
-                mainTimer.Stop();
-
-                formis.isPressed = false;
-                esckeyIsPressed = false;
-                hidetimer = new Timer();
-                hidetimer.Tick += new EventHandler(Hidetimer_Tick);
-                hidetimer.Interval = 15; // in milliseconds
-                hidetimer.Start();
-            }*/
 
             if (mode == 0 && !released)
             {
@@ -218,8 +227,8 @@ namespace DocuShotter
             hidetimer.Stop();
             hidetimer.Dispose();
             released = false;
-
-            formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
+            if (!exitWithoutScrshot)
+                formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
             formis.isPressed = false;
             formis.Opacity = 100; //Set the main form to be visible again
         }
