@@ -389,6 +389,11 @@ namespace DocuShotter
             e.Handled = !((char.IsDigit((char)e.KeyChar)) | (char.IsControl((char)e.KeyChar)));
         }
 
+        private void PictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, pictureBox1.ClientRectangle, Color.LightGray, ButtonBorderStyle.Solid); //Add a lightgrey border to the picturebox
+        }
+
         private void NotifyIcon1_MouseDown(object sender, MouseEventArgs e)
         {
             Show();

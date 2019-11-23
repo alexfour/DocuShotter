@@ -148,6 +148,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(589, 426);
             this.pictureBox1.TabIndex = 13;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.PictureBox1_Paint);
             // 
             // notifyIcon1
             // 
