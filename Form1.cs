@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 /*TODO 
  * Hotkey to remove last screenshot
- * Esc to stop screenshot
 */
 
 namespace DocuShotter
@@ -367,6 +366,7 @@ namespace DocuShotter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Allow all radio buttons to be "tabbable"
             foreach (var item in this.groupBox1.Controls)
             {
                 if (item.GetType() == typeof(RadioButton))
@@ -377,6 +377,16 @@ namespace DocuShotter
         private void TabStopChanged(object sender, EventArgs e)
         {
             ((RadioButton)sender).TabStop = true;
+        }
+
+        private void TextBox5_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !((char.IsDigit((char)e.KeyChar))|(char.IsControl((char)e.KeyChar)));
+        }
+
+        private void TextBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !((char.IsDigit((char)e.KeyChar)) | (char.IsControl((char)e.KeyChar)));
         }
 
         private void NotifyIcon1_MouseDown(object sender, MouseEventArgs e)
