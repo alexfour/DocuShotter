@@ -121,12 +121,14 @@ namespace DocuShotter
         {
             if (hidden)
             {
+                this.MinimumSize = new Size(201,489);
                 this.Width = 201;
                 pictureBox1.Visible = false;
                 button3.Text = ">";
             }
             else
             {
+                this.MinimumSize = new Size(816, 489);
                 this.Width = 816;
                 pictureBox1.Visible = true;
                 button3.Text = "<";
