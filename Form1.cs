@@ -61,7 +61,8 @@ namespace DocuShotter
             else
                 radioButton2.Checked = true;
 
-            checkBox1.Checked = (Properties.Settings.Default.myPrompt) ? true : false;
+            checkBox1.Checked = Properties.Settings.Default.myPrompt ? true : false;
+            checkBox2.Checked = Properties.Settings.Default.myClipboard ? true : false;
 
             hotkeyctrl = Properties.Settings.Default.hotkeyControl;
             hotkeyletter = Properties.Settings.Default.hotkeyLetter;
@@ -70,7 +71,7 @@ namespace DocuShotter
 
             textBox6.Text = hotkeyctrl + " + " + hotkeyletter;
             ChangeHotkey();
-            label5.Select();
+            label4.Select();
         }
 
         private void ChangeHotkey()
@@ -222,6 +223,7 @@ namespace DocuShotter
             Properties.Settings.Default.myHide = button3.Text;
             Properties.Settings.Default.myMode = (radioButton1.Checked) ? 0 : 1;
             Properties.Settings.Default.myPrompt = (checkBox1.Checked) ? true : false;
+            Properties.Settings.Default.myClipboard = (checkBox1.Checked) ? true : false;
             Properties.Settings.Default.hotkeyControl = hotkeyctrl;
             Properties.Settings.Default.hotkeyLetter = hotkeyletter;
             Properties.Settings.Default.hotkeyControlValue = hotkeyctrlkeycode;
@@ -302,7 +304,7 @@ namespace DocuShotter
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            label5.Focus();
+            label4.Focus();
         }
 
         private void Form1_Load(object sender, EventArgs e)

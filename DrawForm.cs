@@ -159,6 +159,8 @@ namespace DocuShotter
                     bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
                     formis.pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
                     formis.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                    if (formis.checkBox2.Checked)
+                        Clipboard.SetImage(bmp);
 
                     pictureBox1.ImageLocation = null;
                     this.Hide();

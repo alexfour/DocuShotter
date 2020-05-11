@@ -32,5 +32,8 @@
     <Setting Name="hotkeyLetterValue" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">81</Value>
     </Setting>
+    <Setting Name="myClipboard" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
