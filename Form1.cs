@@ -223,7 +223,7 @@ namespace DocuShotter
             Properties.Settings.Default.myHide = button3.Text;
             Properties.Settings.Default.myMode = (radioButton1.Checked) ? 0 : 1;
             Properties.Settings.Default.myPrompt = (checkBox1.Checked) ? true : false;
-            Properties.Settings.Default.myClipboard = (checkBox1.Checked) ? true : false;
+            Properties.Settings.Default.myClipboard = (checkBox2.Checked) ? true : false;
             Properties.Settings.Default.hotkeyControl = hotkeyctrl;
             Properties.Settings.Default.hotkeyLetter = hotkeyletter;
             Properties.Settings.Default.hotkeyControlValue = hotkeyctrlkeycode;
