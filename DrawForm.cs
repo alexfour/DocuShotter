@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -95,6 +97,86 @@ namespace DocuShotter
             exitWithoutScrshot = false;
         }
 
+        /// <summary>
+        /// Function for taking a screenshot. 
+        /// First crafts the name from the given parameters such as prefix, curNum and description
+        /// Then creates a Bitmap stating from initialX,initialY and sets it's size to the parameters width and height. 
+        /// Afterwards takes a screenshot of the area and saves it to the user defined folder.
+        /// </summary>
+        /// <param name="width">Width of the screenshot area</param>
+        /// <param name="height">Height of the screenshot area</param>
+        /// <param name="initialX">Initial mouse position X coordinate</param>
+        /// <param name="initialY">Initial mouse position Y coordinate</param>
+        public void TakeScreenShot(int width, int height, int initialX, int initialY)
+        {
+            string savepath = "";            //Path to the folder where images are saved
+            string prefix = "";              //Holds the prefix that is prepended to the filename
+            string description = "";         //Holds the description that is appended to the filename
+            int startNum, curNum = 0;        //Track current naming number
+
+            if (width > 0 && height > 0)
+            {
+                Bitmap bmp = new Bitmap(width, height);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    int length = 3;
+                    savepath = formis.textBox1.Text;
+                    prefix = (formis.textBox2.Text == "") ? "" : formis.textBox2.Text + "-";
+                    startNum = Int32.Parse(formis.textBox5.Text);
+                    String resultingNum;
+
+                    if (startNum >= curNum)
+                        curNum = startNum;
+
+                    resultingNum = curNum.ToString().PadLeft(length, '0');
+
+                    bool exist = Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any();
+                    Console.WriteLine(exist);
+
+                    while (Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any())
+                    {
+                        curNum++;
+                        resultingNum = curNum.ToString().PadLeft(length, '0');
+                    }
+
+                    if (formis.checkBox1.Checked)
+                    {
+                        using (NamePrompt form = new NamePrompt())
+                        {
+                            if (form.ShowDialog() == DialogResult.OK)
+                            {
+                                description = form.screenshotName;
+                                Console.WriteLine("Desc: " + description);
+                            }
+                        }
+                    }
+
+                    resultingNum = (description == "") ? resultingNum : resultingNum + "-";
+                    pictureBox1.Invalidate();
+                    pictureBox1.Update();
+                    g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
+                    Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + description + ".png");
+                    bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
+                    formis.pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
+                    formis.pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+                    pictureBox1.ImageLocation = null;
+                    this.Hide();
+                    formis.isPressed = false;
+                    formis.Opacity = 100; //Set the main form to be visible again
+                }
+            }
+            else
+            {
+                pictureBox1.ImageLocation = null;
+                this.Hide();
+                formis.isPressed = false;
+                formis.Opacity = 100; //Set the main form to be visible again
+            }
+
+        }
+
+        //Esc to stop
         private void DrawForm_KeyDown(object sender, KeyEventArgs e)
         {
             Console.WriteLine(e.KeyValue);
@@ -107,7 +189,6 @@ namespace DocuShotter
 
                 formis.isPressed = false;
 
-                this.Hide();
                 released = false;
                 formis.isPressed = false;
                 formis.Opacity = 100; //Set the main form to be visible again
@@ -137,7 +218,6 @@ namespace DocuShotter
                 endY = System.Windows.Forms.Cursor.Position.Y;
                 CalculateDimensions();
                 mousePressed = false;
-                pictureBox1.ImageLocation = null;
                 mainTimer.Stop();
                 pictureBox1.Update();
 
@@ -205,7 +285,6 @@ namespace DocuShotter
                     mousePressed = false;
                     released = true;
                     pictureBox1.Update();
-                    pictureBox1.ImageLocation = null;
                     mainTimer.Stop();
 
                     hidetimer = new Timer();
@@ -223,14 +302,11 @@ namespace DocuShotter
         /// <param name="e"></param>
         private void Hidetimer_Tick(object sender, EventArgs e)
         {
-            this.Hide();
             hidetimer.Stop();
             hidetimer.Dispose();
             released = false;
             if (!exitWithoutScrshot)
-                formis.TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
-            formis.isPressed = false;
-            formis.Opacity = 100; //Set the main form to be visible again
+                TakeScreenShot(shotWidth, shotHeight, initialX, initialY);
         }
 
         /// <summary>

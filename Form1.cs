@@ -19,7 +19,7 @@ namespace DocuShotter
 
         private string savepath =  "";           //Path to the folder where images are saved
         private string prefix = "";              //Holds the prefix that is prepended to the filename
-        private string description = "";         //Hold the description that is appended to the filename
+        private string description = "";         //Holds the description that is appended to the filename
         private string hotkeyctrl;
         private string hotkeyletter;
         public int hotkeyctrlkeycode;
@@ -132,67 +132,6 @@ namespace DocuShotter
                 this.Width = 816;
                 pictureBox1.Visible = true;
                 button3.Text = "<";
-            }
-        }
-
-        /// <summary>
-        /// Function for taking a screenshot. 
-        /// First crafts the name from the given parameters such as prefix, curNum and description
-        /// Then creates a Bitmap stating from initialX,initialY and sets it's size to the parameters width and height. 
-        /// Afterwards takes a screenshot of the area and saves it to the user defined folder.
-        /// </summary>
-        /// <param name="width">Width of the screenshot area</param>
-        /// <param name="height">Height of the screenshot area</param>
-        /// <param name="initialX">Initial mouse position X coordinate</param>
-        /// <param name="initialY">Initial mouse position Y coordinate</param>
-        public void TakeScreenShot(int width, int height, int initialX, int initialY)
-        {
-            if (width > 0 && height > 0)
-            {
-                Bitmap bmp = new Bitmap(width, height);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    int length = 3;
-                    savepath = textBox1.Text;
-                    prefix = (textBox2.Text == "") ? "" : textBox2.Text + "-";
-                    startNum = Int32.Parse(textBox5.Text);
-                    String resultingNum;
-
-                    if (startNum >= curNum)
-                        curNum = startNum;
-
-                    resultingNum = curNum.ToString().PadLeft(length, '0');
-
-                    bool exist = Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any();
-                    Console.WriteLine(exist);
-
-                    while (Directory.EnumerateFiles(savepath + "\\", prefix + resultingNum + "*").Any())
-                    {
-                        curNum++;
-                        resultingNum = curNum.ToString().PadLeft(length, '0');
-                    }
-
-                    if (checkBox1.Checked)
-                    {
-                        using (NamePrompt form = new NamePrompt())
-                        {
-                            if (form.ShowDialog() == DialogResult.OK)
-                            {
-                                description = form.screenshotName;
-                                Console.WriteLine("Desc: " + description);
-                            }
-                        }
-                    }
-
-                    resultingNum = (description == "") ? resultingNum : resultingNum + "-";
-
-                    g.CopyFromScreen(initialX, initialY, 0, 0, new Size(bmp.Width, bmp.Height));
-                    Console.WriteLine("Saving image to: " + savepath + "\\" + prefix + resultingNum + description + ".png");
-                    bmp.Save(savepath + "\\" + prefix + resultingNum + description + ".png");  // saves the image
-                    pictureBox1.ImageLocation = savepath + "\\" + prefix + resultingNum + description + ".png";
-                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-
-                }
             }
         }
 
