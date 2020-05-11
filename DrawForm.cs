@@ -190,7 +190,8 @@ namespace DocuShotter
                 mainTimer.Stop();
 
                 formis.isPressed = false;
-
+                pictureBox1.ImageLocation = null;
+                this.Hide();
                 released = false;
                 formis.isPressed = false;
                 formis.Opacity = 100; //Set the main form to be visible again
